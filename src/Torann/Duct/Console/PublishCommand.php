@@ -85,10 +85,14 @@ class PublishCommand extends Command {
      */
     public function fire()
     {
+        $production      = false;
         $useFingerprints = $this->manager->getConfig('enable_static_file_fingerprint');
 
-        if ($production = $this->input->getOption('production'))
+        if ($this->input->getOption('prod'))
         {
+            // Is production publish
+            $production = true;
+
             if ($useFingerprints) {
                 $this->verboseOutput('<info>Publishing production assets with fingerprints</info>');
             }
@@ -107,7 +111,9 @@ class PublishCommand extends Command {
         $this->copyAssets($production, $useFingerprints);
 
         // Compile assets
-        $this->compileAssets($production);
+        if ($this->input->getOption('compile')) {
+            $this->compileAssets($production);
+        }
     }
 
     /**
@@ -207,7 +213,7 @@ class PublishCommand extends Command {
      */
     protected function compileAssets($production = false)
     {
-        $this->info('Compiling assets');
+        $this->info('Precompiling assets');
 
         $paths = $this->manager->getConfig('paths');
 
@@ -230,18 +236,6 @@ class PublishCommand extends Command {
     }
 
     /**
-     * Get the console command arguments.
-     *
-     * @return array
-     */
-    protected function getArguments()
-    {
-        return array(
-            array('collection', InputArgument::OPTIONAL, 'The asset collection to build'),
-        );
-    }
-
-    /**
      * Get the console command options.
      *
      * @return array
@@ -249,7 +243,8 @@ class PublishCommand extends Command {
     protected function getOptions()
     {
         return array(
-            array('production', 'p', InputOption::VALUE_NONE, 'Build assets for a production environment')
+            array('prod', 'p', InputOption::VALUE_NONE, 'Build assets for a production environment.'),
+            array('compile', 'c', InputOption::VALUE_NONE, 'Precompile assets.')
         );
     }
 
