@@ -1,0 +1,8 @@
+/**
+ * This is a manifest file that will be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any Css/Less files within this directory and public/packages can be referenced here using a relative path.
+ *
+ *= require_tree .
+ */
