@@ -8,11 +8,12 @@ The Torann/Duct package is meant to simplify the creation and maintenance of the
 
 ## Features
 
-* Supported asset types: LESS, CSS, and JavaScript files.
-* Combining and minifying (any combination of the two) are fully supported
+* Out of the box supported for LESS, CSS, and JavaScript files.
+* Support for custom post processors (SCSS, CoffeeScript, etc.)
+* Combining and minifying of JavaScript and CSS
 * Organize assets into manifest files
-* Asset fingerprinting with basic support for images
-* Asset support inside of CSS
+* Asset fingerprinting with support for images
+* Asset support inside of LESS/CSS
 
 ## Installation
 
@@ -30,12 +31,12 @@ You'll then need to run `composer install` to download it and have the autoloade
 Once Asset Duct is installed you need to register the service provider with the application. Open up `app/config/app.php` and find the `providers` key.
 
 Then register the service provider
+
 ```php
 'Torann\Duct\ServiceProvider'
 ```
 
 > There is no need to add the Facade, the package will add it for you.
-```
 
 ## Documentation
 
