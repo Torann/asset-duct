@@ -23,6 +23,22 @@ return array(
 
     /*
     |--------------------------------------------------------------------------
+    | LESS Import Directories
+    |--------------------------------------------------------------------------
+    |
+    | By default, Duct will look for @imports in the directory of the file
+    | passed. If @imports reside in different directories, this will tell
+    | Duct where to look.
+    |
+    */
+
+    'less_import_dirs' => array(
+        'provider/assets'    => '/provider/',
+        'public/packages'    => '/packages/',
+    ),
+
+    /*
+    |--------------------------------------------------------------------------
     | Map of file extensions to types
     |--------------------------------------------------------------------------
     */
