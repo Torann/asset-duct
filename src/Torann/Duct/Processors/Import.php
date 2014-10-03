@@ -8,8 +8,8 @@ class Import extends AbstractProcessor
 
     function render($context = null)
     {
-        return preg_replace_callback(self::IMPORT_PATTERN, function($matches) use ($context) {
-
+        return preg_replace_callback(self::IMPORT_PATTERN, function($matches) use ($context)
+        {
             if (!empty($matches[1])) {
                 $path = $matches[1];
             }
@@ -25,7 +25,7 @@ class Import extends AbstractProcessor
 
             $context->dependOn($resolvedPath);
 
-            # Import source code without processing, for LESS files.
+            // Import source code without processing, for LESS files.
             return $context->evaluate($resolvedPath, array('processors' => array())) . "\n";
 
         }, $this->getData());

@@ -59,6 +59,29 @@ class Path
     }
 
     /**
+     * Transform array into path.
+     *
+     * @returns string
+     */
+    static function join()
+    {
+        return join(DIRECTORY_SEPARATOR, func_get_args());
+    }
+
+    /**
+     * Standardizes a given path.
+     *
+     * @returns string
+     */
+    static function clean($path)
+    {
+        $path = str_replace(['\\', '/'], ['/', DIRECTORY_SEPARATOR], $path);
+        $path = trim($path, DIRECTORY_SEPARATOR);
+
+        return DIRECTORY_SEPARATOR.$path.DIRECTORY_SEPARATOR;
+    }
+
+    /**
      * Checks if the destination file is older than the
      * source file.
      *
