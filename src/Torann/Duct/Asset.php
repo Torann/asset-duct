@@ -81,7 +81,7 @@ class Asset
         if (null === $this->body)
         {
             $result = '';
-            $ctx    = new Context($this->manager);
+            $ctx    = new Context($this->manager, $this->getSourceMap());
             $data   = file_get_contents($this->path);
 
             // Process the contents
@@ -126,6 +126,18 @@ class Asset
         }
 
         return $basename;
+    }
+
+    /**
+     * Returns the asset source map file
+     *
+     * @return string
+     */
+    public function getSourceMap()
+    {
+        $filename = $this->getBasename(false).'.map';
+
+        return join(DIRECTORY_SEPARATOR, array($this->manager->getConfig('asset_dir'), $filename));
     }
 
     /**

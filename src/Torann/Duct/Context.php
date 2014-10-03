@@ -17,9 +17,12 @@ class Context
     public $dependencyAssets = array();
     public $manager;
 
-    function __construct(Manager $manager)
+    public $source_map;
+
+    function __construct(Manager $manager, $source_map = null)
     {
-        $this->manager = $manager;
+        $this->manager    = $manager;
+        $this->source_map = $source_map;
     }
 
     /**
@@ -221,7 +224,7 @@ class Context
 
     protected function createSubContext()
     {
-        $context = new static($this->manager);
+        $context = new static($this->manager, $this->source_map);
         $context->path = $this->path;
         $context->requiredPaths =& $this->requiredPaths;
 
