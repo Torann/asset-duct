@@ -16,7 +16,7 @@ return array(
 
     'paths' => array(
         'app/assets/javascripts',
-        'app/assets/less',
+        'app/assets/stylesheets',
         'provider/assets',
         'public/packages'
     ),

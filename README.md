@@ -38,6 +38,20 @@ Then register the service provider
 
 > There is no need to add the Facade, the package will add it for you.
 
+### Create configuration file using artisan
+
+```
+$ php artisan config:publish torann/duct
+```
+
+### Add to .gitignore
+
+The local assets directory needs to be added to the **.gitignore** file. This reflects the `asset_dir` variable in the config file.
+
+```
+public/assets/*
+```
+
 ## Documentation
 
 [View the official documentation](https://github.com/Torann/asset-duct/wiki).
