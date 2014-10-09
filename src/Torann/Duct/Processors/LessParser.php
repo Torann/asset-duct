@@ -11,7 +11,7 @@ class LessParser extends AbstractProcessor
         $options = array(
             'sourceMap'        => (!empty($subContext->source_map)),
             'sourceMapWriteTo' => Path::join(public_path(), $subContext->source_map),
-            'sourceMapURL'     => Path::join($subContext->source_map),
+            'sourceMapURL'     => '/'.Path::join($subContext->source_map),
             'import_dirs'      => array()
         );
 
