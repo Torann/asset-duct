@@ -263,6 +263,11 @@ class Manager implements \ArrayAccess
             $path = "/{$path}";
         }
 
+        // Ignore assets from packages...for now
+        if (substr($path, 0, 9) === '/packages') {
+            return asset($path);
+        }
+
         // Check manifest for production fingerprints
         if ($this->production && $this->getConfig('enable_static_file_fingerprint')) {
             $path = $this->manifest->get($path) ?: $path;

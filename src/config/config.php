@@ -111,11 +111,12 @@ return array(
     |--------------------------------------------------------------------------
     |
     | If enabled this will append a fingerprint to the static files when
-    | copied in production.
+    | copied in production. And will require the asset to be called using
+    | the helper function "get_asset" (i.e. get_asset('/images/logo.png) )
     |
     */
 
-    'enable_static_file_fingerprint' => true,
+    'enable_static_file_fingerprint' => false,
 
     /*
     |--------------------------------------------------------------------------
