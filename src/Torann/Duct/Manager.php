@@ -265,7 +265,7 @@ class Manager implements \ArrayAccess
 
         // Ignore assets from packages...for now
         if (substr($path, 0, 9) === '/packages') {
-            return asset($path);
+            return $path;
         }
 
         // Check manifest for production fingerprints
@@ -273,7 +273,7 @@ class Manager implements \ArrayAccess
             $path = $this->manifest->get($path) ?: $path;
         }
 
-        return asset("/{$asset_dir}{$path}");
+        return "/{$asset_dir}{$path}";
     }
 
     /**
