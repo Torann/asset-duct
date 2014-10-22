@@ -282,21 +282,24 @@ class Manager implements \ArrayAccess
      * @param  string  $path
      * @return array
      */
-	public function getAssetSource($path)
-	{
+    public function getAssetSource($path)
+    {
         $asset_dir    = $this->getConfig('asset_dir');
         $static_files = $this->getConfig('static_files');
+        $path         = preg_replace("#^{$asset_dir}/?#", '', $path);
 
-        $path = preg_replace("#^{$asset_dir}/?#", '', $path);
-        $dir = dirname($path);
-
-        if (isset($static_files[$dir]))
+        foreach ($static_files as $destination=>$sources)
         {
-            foreach ($static_files[$dir] as $source)
+            foreach ($sources as $source)
             {
-                $source_path =  join(DIRECTORY_SEPARATOR, array(base_path(), $source, basename($path)));
+                $source_path = join(DIRECTORY_SEPARATOR, array(
+                    base_path(),
+                    $source,
+                    preg_replace("#^{$destination}/?#", '', $path)
+                ));
 
-                if (file_exists($source_path)) {
+                if (file_exists($source_path))
+                {
                     return $source_path;
                 }
             }
