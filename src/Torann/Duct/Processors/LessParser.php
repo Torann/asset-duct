@@ -33,7 +33,7 @@ class LessParser extends AbstractProcessor
         $css = $parser->getCss();
 
         // Update images in the CSS
-        return preg_replace_callback("/url\(['|\"]?\/(.*?)['|\"]?\)/s", function($matches) use ($subContext)
+        return preg_replace_callback("/url\(['|\"]?(\/.*?)['|\"]?\)/s", function($matches) use ($subContext)
         {
             // Get an asset from the manifest
             $image = $subContext->manager->getAsset($matches[1]);
