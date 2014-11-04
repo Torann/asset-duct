@@ -114,6 +114,13 @@ class PublishCommand extends Command {
         if ($this->input->getOption('compile')) {
             $this->compileAssets($production);
         }
+
+        // Remove old views
+        if ($this->input->getOption('delete'))
+        {
+            $this->verboseOutput('<comment>Clearing compiled views...</comment>');
+            array_map('unlink', glob(storage_path().'/views/*'));
+        }
     }
 
     /**
@@ -244,7 +251,8 @@ class PublishCommand extends Command {
     {
         return array(
             array('prod', 'p', InputOption::VALUE_NONE, 'Build assets for a production environment.'),
-            array('compile', 'c', InputOption::VALUE_NONE, 'Precompile assets.')
+            array('compile', 'c', InputOption::VALUE_NONE, 'Precompile assets.'),
+            array('delete', 'd', InputOption::VALUE_NONE, 'Delete compiled views.')
         );
     }
 
