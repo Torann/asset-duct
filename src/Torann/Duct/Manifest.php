@@ -29,12 +29,12 @@ class Manifest {
      * Create a new manifest instance.
      *
      * @param  Filesystem  $files
-     * @param  string      $manifestPath
+     * @param  string      $path
      */
-    public function __construct(Filesystem $files, $manifestPath)
+    public function __construct(Filesystem $files, $path)
     {
         $this->files = $files;
-        $this->path  = $manifestPath.DIRECTORY_SEPARATOR.'ductwork.json';
+        $this->path  = public_path() . "/{$path}/.manifest.json";
     }
 
     /**

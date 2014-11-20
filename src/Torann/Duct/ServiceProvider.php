@@ -60,9 +60,8 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     {
         $this->app['torann.manifest'] = $this->app->share(function($app)
         {
-            $meta = $app['config']->get('app.manifest');
-
-            return new Manifest($app['files'], $meta);
+            $path = $app['config']->get('duct::asset_dir.production');
+            return new Manifest($app['files'], $path);
         });
     }
 
