@@ -137,7 +137,7 @@ class Asset
     {
         $filename = $this->getBasename(false).'.map';
 
-        return join(DIRECTORY_SEPARATOR, array($this->manager->getConfig('asset_dir'), $filename));
+        return join(DIRECTORY_SEPARATOR, array($this->manager->getAssetDir(), $filename));
     }
 
     /**
@@ -245,7 +245,7 @@ class Asset
     public function write()
     {
         // Asset root
-        $dir = $this->manager->getConfig('asset_dir');
+        $dir = $this->manager->getAssetDir();
 
         // Check manifest first in production
         if ($cachedName = $this->inManifest()) {
@@ -329,7 +329,7 @@ class Asset
 
             // Avoid treating name of a dotfile as extension by
             // ignoring dots at the first offset in the string
-            if (!$basename or false === ($pos = strpos($basename, '.', 1))) {
+            if (! $basename || false === ($pos = strpos($basename, '.', 1))) {
                 return array();
             }
 

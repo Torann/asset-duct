@@ -7,6 +7,9 @@ class LessParser extends AbstractProcessor
 {
     function render($subContext)
     {
+        // Some systems have this set low
+        ini_set('xdebug.max_nesting_level', 200);
+
         // Less parser options
         $options = array(
             'sourceMap'        => (!empty($subContext->source_map)),

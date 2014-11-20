@@ -178,7 +178,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->app->before(function ($request, $response) use ($manager)
         {
             // Duct public location
-            $asset_dir = $manager->getConfig('asset_dir');
+            $asset_dir = $manager->getAssetDir();
 
             // Request path
             $path = $request->path();

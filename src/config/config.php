@@ -76,14 +76,19 @@ return array(
 
     /*
     |--------------------------------------------------------------------------
-    | Local assets directory
+    | Processed asset directories
     |--------------------------------------------------------------------------
     |
-    | Override default prefix folder for local assets. Don't use trailing slash!.
-    | They are relative to your public folder.
+    | Location for processed assets. They are relative to your public folder.
+    | This is useful for pre-compiling assets before deployment.
+    |
+    | NOTE: Don't use trailing slash!
     */
 
-    'asset_dir' => 'assets',
+    'asset_dir' => array(
+        'local'      => 'assets',
+        'production' => 'assets'
+    ),
 
     /*
     |--------------------------------------------------------------------------

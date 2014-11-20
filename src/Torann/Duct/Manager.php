@@ -119,6 +119,18 @@ class Manager implements \ArrayAccess
     }
 
     /**
+     * Get processed asset directory.
+     *
+     * @return string
+     */
+    public function getAssetDir()
+    {
+        $asset_dir = $this->getConfig('asset_dir');
+
+        return $this->inProduction() ? $asset_dir['production'] : $asset_dir['local'];
+    }
+
+    /**
      * In production mode.
      *
      * @return bool
@@ -135,7 +147,7 @@ class Manager implements \ArrayAccess
      */
     public function getTargetPath()
     {
-        return join(DIRECTORY_SEPARATOR, array(public_path(), $this->getConfig('asset_dir')));
+        return join(DIRECTORY_SEPARATOR, array(public_path(), $this->getAssetDir()));
     }
 
     /**
@@ -253,7 +265,7 @@ class Manager implements \ArrayAccess
      */
 	public function getAsset($path)
 	{
-        $asset_dir = $this->getConfig('asset_dir');
+        $asset_dir = $this->getAssetDir();
 
         // Remove query string
         $path = preg_replace('/\?.*/', '', $path);
@@ -284,7 +296,7 @@ class Manager implements \ArrayAccess
      */
     public function getAssetSource($path)
     {
-        $asset_dir    = $this->getConfig('asset_dir');
+        $asset_dir    = $this->getAssetDir();
         $static_files = $this->getConfig('static_files');
         $path         = preg_replace("#^{$asset_dir}/?#", '', $path);
 
