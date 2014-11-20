@@ -131,6 +131,16 @@ class Manager implements \ArrayAccess
     }
 
     /**
+     * Set production mode.
+     *
+     * @param bool $prod
+     */
+    public function setProduction($prod)
+    {
+        $this->production = (boolean) $prod;
+    }
+
+    /**
      * In production mode.
      *
      * @return bool
@@ -192,17 +202,10 @@ class Manager implements \ArrayAccess
      * Add from on of more collections
      *
      * @param  string   $logicalPath
-     * @param  string   $extensionType
-     * @param  boolean  $production (used in the console)
      * @return string
      */
-    public function render($logicalPath, $production = false)
+    public function render($logicalPath)
     {
-        // Render as Production
-        if ($production) {
-            $this->production = $production;
-        }
-
         // Get asset
         $asset = $this->find($logicalPath);
 

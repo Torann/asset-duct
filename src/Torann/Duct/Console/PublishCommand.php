@@ -61,6 +61,13 @@ class PublishCommand extends Command {
     protected $manifest;
 
     /**
+     * Production state.
+     *
+     * @var bool
+     */
+    protected $production = false;
+
+    /**
      * Create a new asset compile command instance.
      *
      * @param  \Torann\Duct\Manager  $manager
@@ -73,9 +80,6 @@ class PublishCommand extends Command {
         $this->manager  = $manager;
         $this->files    = $files;
         $this->manifest = $manager->getManifest();
-
-        $this->asset_path   = $this->manager->getTargetPath();
-        $this->static_files = $this->manager->getConfig('static_files');
     }
 
     /**
@@ -85,13 +89,14 @@ class PublishCommand extends Command {
      */
     public function fire()
     {
-        $production      = false;
         $useFingerprints = $this->manager->getConfig('enable_static_file_fingerprint');
 
         if ($this->input->getOption('prod'))
         {
+            $this->production = true;
+
             // Is production publish
-            $production = true;
+            $this->manager->setProduction(true);
 
             if ($useFingerprints) {
                 $this->verboseOutput('<info>Publishing production assets with fingerprints</info>');
@@ -104,15 +109,19 @@ class PublishCommand extends Command {
             $this->verboseOutput('<info>Publishing development assets</info>');
         }
 
+        // Set paths
+        $this->asset_path   = $this->manager->getTargetPath();
+        $this->static_files = $this->manager->getConfig('static_files');
+
         // Cleanup
         $this->cleanEverything();
 
         // Copy assets
-        $this->copyAssets($production, $useFingerprints);
+        $this->copyAssets($useFingerprints);
 
         // Compile assets
         if ($this->input->getOption('compile')) {
-            $this->compileAssets($production);
+            $this->compileAssets();
         }
 
         // Remove old views
@@ -142,10 +151,10 @@ class PublishCommand extends Command {
     /**
      * Copy assets to the proper directory.
      *
-     * @param  bool $production
+     * @param  bool $useFingerprints
      * @return void
      */
-    protected function copyAssets($production = false, $useFingerprints = false)
+    protected function copyAssets($useFingerprints = false)
     {
         $this->info('Publishing static assets');
 
@@ -185,7 +194,7 @@ class PublishCommand extends Command {
                     }
                     else {
                         // Create a fingerprint
-                        if ($production && $useFingerprints)
+                        if ($this->production && $useFingerprints)
                         {
                             // Generate new name
                             $digest = sha1($item->getMTime());
@@ -215,10 +224,9 @@ class PublishCommand extends Command {
     /**
      * Compile assets.
      *
-     * @param  bool $production
      * @return void
      */
-    protected function compileAssets($production = false)
+    protected function compileAssets()
     {
         $this->info('Precompiling assets');
 
@@ -236,7 +244,7 @@ class PublishCommand extends Command {
                 {
                     $filename = str_replace($path, '', $file);
                     $this->verboseOutput('   Compiling -> ' . $filename);
-                    $this->manager->render($filename, $production);
+                    $this->manager->render($filename);
                 }
             }
         }
