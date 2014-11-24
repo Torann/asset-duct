@@ -207,23 +207,36 @@ class Manager implements \ArrayAccess
     public function render($logicalPath)
     {
         // Get asset
-        $asset = $this->find($logicalPath);
-
-        if ($asset)
+        if ($asset = $this->find($logicalPath))
         {
             // Build
-            $relative = $asset->write();
-
-            if ($relative)
+            if ($relative = $asset->write())
             {
-                switch($asset->getContentType())
+                // Production renders the content once
+                if ($this->production)
                 {
-                    case 'text/css':
-                        return "<?php echo HTML::style('{$relative}'); ?>";
-                        break;
-                    case 'application/javascript':
-                        return "<?php echo HTML::script('{$relative}'); ?>";
-                        break;
+                    switch ($asset->getContentType())
+                    {
+                        case 'text/css':
+                            return "<?php echo HTML::style('{$relative}'); ?>";
+                            break;
+                        case 'application/javascript':
+                            return "<?php echo HTML::script('{$relative}'); ?>";
+                            break;
+                    }
+                }
+
+                // Development assets are created on each page load
+                else {
+                    switch ($asset->getContentType())
+                    {
+                        case 'text/css':
+                            return HTML::style($relative);
+                            break;
+                        case 'application/javascript':
+                            return HTML::script($relative);
+                            break;
+                    }
                 }
 
                 return "<!-- torann\duct:: Content type for '{$logicalPath}' not found -->\n";
