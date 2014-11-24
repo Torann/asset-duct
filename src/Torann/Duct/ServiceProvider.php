@@ -176,15 +176,15 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         // Add before filter for static assets
         $this->app->before(function ($request, $response) use ($manager)
         {
-            // Duct public location
-            $asset_dir = $manager->getAssetDir();
+            $asset_dir = $manager->getConfig('asset_dir');
 
             // Request path
             $path = $request->path();
 
-            if (starts_with($path, $asset_dir))
+            // Check production path
+            if (starts_with($path, $asset_dir['production']))
             {
-                $source_path = $manager->getAssetSource($path);
+                $source_path = $manager->getAssetSource($path, $asset_dir['production']);
 
                 if ($source_path) {
                     return new BinaryFileResponse($source_path, 200);

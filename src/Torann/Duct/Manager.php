@@ -308,11 +308,12 @@ class Manager implements \ArrayAccess
      * Return the source asset for file
      *
      * @param  string  $path
+     * @param  string  $asset_dir
      * @return array
      */
-    public function getAssetSource($path)
+    public function getAssetSource($path, $asset_dir = null)
     {
-        $asset_dir    = $this->getAssetDir();
+        $asset_dir    = $asset_dir ? $asset_dir : $this->getAssetDir();
         $static_files = $this->getConfig('static_files');
         $path         = preg_replace("#^{$asset_dir}/?#", '', $path);
 
