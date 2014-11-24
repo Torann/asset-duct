@@ -219,10 +219,10 @@ class Manager implements \ArrayAccess
                 switch($asset->getContentType())
                 {
                     case 'text/css':
-                        return HTML::style($relative);
+                        return "<?php echo HTML::style('{$relative}'); ?>";
                         break;
                     case 'application/javascript':
-                        return HTML::script($relative);
+                        return "<?php echo HTML::script('{$relative}'); ?>";
                         break;
                 }
 
