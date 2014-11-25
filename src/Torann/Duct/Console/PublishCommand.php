@@ -96,7 +96,7 @@ class PublishCommand extends Command {
             $this->production = true;
 
             // Is production publish
-            $this->manager->setProduction(true);
+            $this->manager->setProduction();
 
             if ($useFingerprints) {
                 $this->verboseOutput('<info>Publishing production assets with fingerprints</info>');

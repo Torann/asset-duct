@@ -28,12 +28,8 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 		// Add 'Duct' facade alias
 		AliasLoader::getInstance()->alias('Duct', 'Torann\Duct\Facade');
 
-        // Load the local manifest that contains the fingerprinted
-        // paths to production builds.
-        $this->app['torann.manifest']->load();
-
         // Register route for assets in no prod evn
-        if (! $this->app['torann.duct']->inProduction()) {
+        if ($this->app['torann.duct']->inDevelopment()) {
             $this->registerFilter();
         }
 	}
@@ -60,8 +56,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     {
         $this->app['torann.manifest'] = $this->app->share(function($app)
         {
-            $path = $app['config']->get('duct::asset_dir.production');
-            return new Manifest($app['files'], $path);
+            return new Manifest($app['files']);
         });
     }
 
@@ -78,11 +73,17 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             $config = $app->config->get('duct::config', array());
             $config['public_dir'] = public_path();
 
-            // In production?
-            $inProduction = in_array($app['env'], (array) $config['production']);
+            // Which environment
+            $environment = 'local';
+            if (in_array($app['env'], (array) array_get($config, 'production'))) {
+                $environment = 'production';
+            }
+            if (in_array($app['env'], (array) array_get($config, 'staging'))) {
+                $environment = 'staging';
+            }
 
             // Create instance
-            return new Manager($config, $app['torann.manifest'], $inProduction);
+            return new Manager($config, $app['torann.manifest'], $environment);
         });
     }
 
@@ -166,6 +167,8 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     /**
      * Register missing asset filter.
      *
+     * TODO: Clean this up, there has to be a better way
+     *
      * @return void
      */
     private function registerFilter()
@@ -179,7 +182,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             $asset_dir = $manager->getConfig('asset_dir');
 
             // Request path
-            $path = $request->path();
+            $path = str_replace($asset_dir['local'], $asset_dir['production'], $request->path());
 
             // Check production path
             if (starts_with($path, $asset_dir['production']))

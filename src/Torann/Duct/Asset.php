@@ -229,8 +229,8 @@ class Asset
             $this->manager->postProcessors->all($contentType)
         );
 
-        // For production mode
-        if($this->manager->inProduction()) {
+        // For non-development environments
+        if(! $this->manager->inDevelopment()) {
             $processors = array_merge($processors, $this->manager->bundleProcessors->all($contentType));
         }
 
@@ -247,13 +247,13 @@ class Asset
         // Asset root
         $dir = $this->manager->getAssetDir();
 
-        // Check manifest first in production
+        // Check manifest first in non-development environments
         if ($cachedName = $this->inManifest()) {
             return join(DIRECTORY_SEPARATOR, array($dir, $cachedName));
         }
 
         // Destination
-        $filename = ($this->manager->inProduction()) ? $this->getDigestName() : $this->getBasename();
+        $filename = ($this->manager->inDevelopment()) ? $this->getBasename() : $this->getDigestName();
         $dest     = join(DIRECTORY_SEPARATOR, array(public_path(), $dir, $filename));
 
         if (!is_dir(dirname($dest))) {
@@ -265,8 +265,8 @@ class Asset
 
         @file_put_contents($dest, $body);
 
-        // Add to manifest in production only
-        if ($this->manager->inProduction()) {
+        // Add to manifest in non-development environments only
+        if (! $this->manager->inDevelopment()) {
             $manifest = $this->manager->getManifest();
             $manifest->add($this->getBasename(), $filename);
         }
@@ -281,7 +281,7 @@ class Asset
      */
     public function inManifest()
     {
-        if ($this->manager->inProduction())
+        if (! $this->manager->inDevelopment())
         {
             $manifest = $this->manager->getManifest();
             return $manifest->get($this->getBasename(), false);

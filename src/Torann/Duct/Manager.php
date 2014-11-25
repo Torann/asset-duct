@@ -44,25 +44,27 @@ class Manager implements \ArrayAccess
     protected $manifest;
 
 	/**
-	 * Production Environment
+	 * Environment
      *
-	 * @var bool
+	 * @var string
 	 */
-	protected $production = false;
+	protected $environment = 'local';
 
 	/**
 	 * Class constructor.
 	 *
 	 * @param  array     $config
      * @param  Manifest  $manifest
-     * @param  bool      $production
+     * @param  string    $environment
 	 */
-	function __construct(array $config, Manifest $manifest, $production = false)
+	function __construct(array $config, Manifest $manifest, $environment = 'local')
 	{
         // Set config
-        $this->config     = $config;
-        $this->production = $production;
-        $this->manifest   = $manifest;
+        $this->config      = $config;
+        $this->manifest    = $manifest;
+
+        // Set environment
+        $this->setEnvironment($environment);
 
         // Set contact types
         $this->contentTypes = $config['contentTypes'];
@@ -131,23 +133,45 @@ class Manager implements \ArrayAccess
     }
 
     /**
-     * Set production mode.
+     * Set as production environment.
      *
-     * @param bool $prod
+     * @param string $env
      */
-    public function setProduction($prod)
+    private function setEnvironment($env = 'local')
     {
-        $this->production = (boolean) $prod;
+        // Set to production
+        $this->environment = $env;
+
+        // Reload manifest
+        $this->manifest->load($this->getAssetDir());
     }
 
     /**
-     * In production mode.
+     * Set as production environment.
+     */
+    public function setProduction()
+    {
+        $this->setEnvironment('production');
+    }
+
+    /**
+     * Is in production mode.
      *
      * @return bool
      */
     public function inProduction()
     {
-        return $this->production;
+        return ($this->environment === 'production');
+    }
+
+    /**
+     * Is in environment provided.
+     *
+     * @return bool
+     */
+    public function inDevelopment()
+    {
+        return ($this->environment !== 'staging' && $this->environment !== 'production');
     }
 
     /**
@@ -212,8 +236,8 @@ class Manager implements \ArrayAccess
             // Build
             if ($relative = $asset->write())
             {
-                // Production renders the content once
-                if ($this->production)
+                // Non-development environments renders the content once
+                if ($this->inProduction())
                 {
                     switch ($asset->getContentType())
                     {
@@ -226,7 +250,7 @@ class Manager implements \ArrayAccess
                     }
                 }
 
-                // Development assets are created on each page load
+                // Development environments assets are created on each page load
                 else {
                     switch ($asset->getContentType())
                     {
@@ -254,7 +278,7 @@ class Manager implements \ArrayAccess
      */
     public function bladeHtml($path)
     {
-        return $this->production ? $this->render($path) : "<?php echo Duct::render('{$path}'); ?>";
+        return $this->inDevelopment() ? "<?php echo Duct::render('{$path}'); ?>" : $this->render($path);
     }
 
     /**
@@ -266,7 +290,7 @@ class Manager implements \ArrayAccess
     public function bladeImage($logicalPath)
     {
         // Production environments
-        if($this->production) {
+        if(! $this->inDevelopment()) {
             return $this->getAsset($logicalPath);
         }
 
@@ -297,7 +321,7 @@ class Manager implements \ArrayAccess
         }
 
         // Check manifest for production fingerprints
-        if ($this->production && $this->getConfig('enable_static_file_fingerprint')) {
+        if (! $this->inDevelopment() && $this->getConfig('enable_static_file_fingerprint')) {
             $path = $this->manifest->get($path) ?: $path;
         }
 

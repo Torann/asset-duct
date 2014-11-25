@@ -92,13 +92,13 @@ return array(
 
     /*
     |--------------------------------------------------------------------------
-    | Production Environment
+    | Environments
     |--------------------------------------------------------------------------
     |
-    | Assets needs to know what your production environment is so that it can
-    | respond with the correct assets. When in production Assets will attempt
-    | to return any built collections. If a collection has not been built
-    | Assets will dynamically route to each asset in the collection and apply
+    | Duct needs to know what environment it is running in is so that it can
+    | respond with the correct assets. When in production Duct will attempt
+    | to return any built manifests. If a collection has not been built
+    | Duct will dynamically route to each asset in the manifest and apply
     | the filters.
     |
     | The last method can be very taxing so it's highly recommended that
@@ -109,6 +109,7 @@ return array(
     */
 
     'production' => array('production', 'prod'),
+    'staging'    => array('staging'),
 
     /*
     |--------------------------------------------------------------------------
