@@ -29,12 +29,10 @@ class Manifest {
      * Create a new manifest instance.
      *
      * @param  Filesystem  $files
-     * @param  string      $path
      */
-    public function __construct(Filesystem $files, $path)
+    public function __construct(Filesystem $files)
     {
         $this->files = $files;
-        $this->path  = public_path() . "/{$path}/.manifest.json";
     }
 
     /**
@@ -69,10 +67,12 @@ class Manifest {
     /**
      * Loads and registers the manifest entries.
      *
-     * @return void
+     * @param string $path
      */
-    public function load()
+    public function load($path)
     {
+        $this->path  = public_path() . "/{$path}/.manifest.json";
+
         if ($this->files->exists($this->path)) {
             $this->entries = json_decode($this->files->get($this->path), true);
         }
