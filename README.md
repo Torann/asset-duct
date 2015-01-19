@@ -54,7 +54,7 @@ public/assets/*
 
 ## Documentation
 
-[View the official documentation](https://github.com/Torann/asset-duct/wiki).
+[View the official documentation](http://lyften.com/projects/duct/).
 
 ## Change Log
 
