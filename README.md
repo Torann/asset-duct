@@ -1,10 +1,13 @@
-# Asset Duct for Laravel - Alpha
+# Asset Duct for Laravel 4 - Alpha
 
 [![Latest Stable Version](https://poser.pugx.org/torann/duct/v/stable.png)](https://packagist.org/packages/torann/duct) [![Total Downloads](https://poser.pugx.org/torann/duct/downloads.png)](https://packagist.org/packages/torann/duct)
 
 The Torann/Duct package is meant to simplify the creation and maintenance of the essential assets of a Laravel based application.
 
 ----------
+
+## Note About Laravel 5
+With Laravel Elixir in Laravel 5 I'm not sure if this package will be updated to support Laravel 5. Time will tell.
 
 ## Features
 
