@@ -10,6 +10,6 @@ if ( ! function_exists('get_asset'))
 	 */
 	function get_asset($asset)
 	{
-		return Duct::getAsset($asset);
+		return asset(Duct::getAsset($asset));
 	}
 }
