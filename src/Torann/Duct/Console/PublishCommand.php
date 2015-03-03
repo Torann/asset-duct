@@ -1,5 +1,7 @@
 <?php namespace Torann\Duct\Console;
 
+use SplFileInfo;
+
 use Torann\Duct\Manager;
 use Torann\Duct\Utilities\Path;
 
@@ -164,14 +166,29 @@ class PublishCommand extends Command {
         {
             // Ensure the destination is there
             $dest = join(DIRECTORY_SEPARATOR, array($this->asset_path, $destination));
-            if (!is_dir($dest)) {
+
+            if (! is_dir($dest)) {
                 mkdir($dest, 0777, true);
             }
 
             foreach ($sources as $source)
             {
+                $sourcePath = $sourceRoot.$source;
+
+                // Copy single file
+                if(is_file($sourcePath))
+                {
+                    $name = basename($source);
+                    $path = join(DIRECTORY_SEPARATOR, array($dest, $name));
+
+                    $this->copyFile(new SplFileInfo($sourcePath), $path, $destination, $name, $useFingerprints);
+
+                    continue;
+                }
+
+                // Get directory items
                 $iterator = new \RecursiveIteratorIterator(
-                    new \RecursiveDirectoryIterator($sourceRoot.$source, \RecursiveDirectoryIterator::SKIP_DOTS),
+                    new \RecursiveDirectoryIterator($sourcePath, \RecursiveDirectoryIterator::SKIP_DOTS),
                     \RecursiveIteratorIterator::SELF_FIRST
                 );
 
@@ -193,32 +210,48 @@ class PublishCommand extends Command {
                         }
                     }
                     else {
-                        // Create a fingerprint
-                        if ($this->production && $useFingerprints)
-                        {
-                            // Generate new name
-                            $digest = sha1($item->getMTime());
 
-                            $original = "/{$destination}/{$name}";
-
-                            // Generate new name
-                            $ext  = Path::normalizeExtension($item->getExtension());
-                            $name = preg_replace('/(\.\w+)$/', "-{$digest}$ext", $name);
-
-                            // Update path with new filename
-                            $path = join(DIRECTORY_SEPARATOR, array($dest, $name));
-
-                            // Add to manifest
-                            $this->manifest->add($original, "/{$destination}/{$name}");
-                        }
-
-                        // Copy that file
-                        $this->files->copy($item, $path);
-                        $this->verboseOutput('   Copying -> ' . str_replace($this->asset_path, '', $path));
+                        $this->copyFile($item, $path, $destination, $name, $useFingerprints);
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Copy single file.
+     *
+     * @param  object $file
+     * @param  string $path
+     * @param  string $destination
+     * @param  string $name
+     * @param  bool   $useFingerprints
+     * @return void
+     */
+    protected function copyFile($file, $path, $destination, $name, $useFingerprints = false)
+    {
+        // Create a fingerprint
+        if ($this->production && $useFingerprints)
+        {
+            // Generate new name
+            $digest = sha1($file->getMTime());
+
+            $original = "/{$destination}/{$name}";
+
+            // Generate new name
+            $ext  = Path::normalizeExtension($file->getExtension());
+            $name = preg_replace('/(\.\w+)$/', "-{$digest}$ext", $name);
+
+            // Update path with new filename
+            $path = join(DIRECTORY_SEPARATOR, array($this->asset_path, $destination, $name));
+
+            // Add to manifest
+            $this->manifest->add($original, "/{$destination}/{$name}");
+        }
+
+        // Copy that file
+        $this->files->copy($file, $path);
+        $this->verboseOutput('   Copying -> ' . str_replace($this->asset_path, '', $path));
     }
 
     /**
