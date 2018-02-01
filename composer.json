@@ -2,7 +2,7 @@
     "name": "torann/duct",
     "description": "Asset Duct for Laravel 4.",
     "keywords": ["laravel", "duct", "assets", "asset management", "asset pipeline", "pipeline"],
-    "license": "BSD 2-Clause",
+    "license": "BSD-2-Clause",
     "authors": [
         {
             "name": "Daniel Stainback",
